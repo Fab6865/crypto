@@ -1,0 +1,787 @@
+<html><head><base href="https://investmentsimulator.com/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investment Simulator: Crypto, Real Estate & Stores</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  h1, h2 {
+    color: #333;
+    text-align: center;
+  }
+  .crypto-card, .property-card, .store-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  .crypto-name, .property-name, .store-name {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  .crypto-price, .property-price, .store-price {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+  .crypto-holdings, .property-status, .store-status {
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 5px;
+  }
+  .invest-btn, .buy-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+  .sell-btn, .sell-property-btn, .sell-store-btn {
+    background-color: #f44336;
+    color: white;
+  }
+  .sell-all-btn {
+    background-color: #FF9800;
+    color: white;
+  }
+  .find-tenant-btn, .upgrade-btn {
+    background-color: #2196F3;
+    color: white;
+  }
+  .refresh-btn {
+    background-color: #9C27B0;
+    color: white;
+  }
+  button:hover {
+    opacity: 0.8;
+  }
+  #portfolio-value {
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+  }
+  #real-estate-container, #store-container {
+    margin-top: 30px;
+  }
+  .upgrade-list {
+    margin-top: 10px;
+  }
+  .upgrade-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  #get-cash-btn {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    display: block;
+    margin: 20px auto;
+  }
+  .menu {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .menu-item {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .menu-item:hover {
+    background-color: #2980b9;
+  }
+  .menu-item.active {
+    background-color: #2980b9;
+  }
+  .investment-section {
+    display: none;
+  }
+  .investment-section.active {
+    display: block;
+  }
+  #boosters-btn {
+    background-color: #E91E63;
+    color: white;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    display: block;
+    margin: 20px auto;
+  }
+  .booster-menu {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+  }
+  .booster-menu.active {
+    display: block;
+  }
+  .booster-item {
+    margin-bottom: 10px;
+  }
+  .booster-item button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+  }
+  .close-boosters {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+  #save-status {
+    text-align: center;
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Investment Simulator: Crypto, Real Estate & Stores</h1>
+    <button id="get-cash-btn" onclick="getCash()">Get Cash</button>
+    <button id="boosters-btn" onclick="toggleBoosterMenu()">Boosters</button>
+    <div id="portfolio-value">Total Portfolio Value: $0</div>
+    <div id="save-status">Game auto-saved</div>
+
+    <div class="menu">
+      <div class="menu-item active" onclick="showSection('crypto')">Cryptocurrency</div>
+      <div class="menu-item" onclick="showSection('real-estate')">Real Estate</div>
+      <div class="menu-item" onclick="showSection('stores')">Stores</div>
+    </div>
+
+    <div id="crypto-section" class="investment-section active">
+      <h2>Cryptocurrency Investments</h2>
+      <div id="crypto-container"></div>
+    </div>
+
+    <div id="real-estate-section" class="investment-section">
+      <h2>Real Estate Investments</h2>
+      <div id="real-estate-container"></div>
+    </div>
+
+    <div id="stores-section" class="investment-section">
+      <h2>Store Investments</h2>
+      <div id="store-container"></div>
+    </div>
+  </div>
+
+  <div id="booster-menu" class="booster-menu">
+    <button class="close-boosters" onclick="toggleBoosterMenu()">×</button>
+    <h2>Boosters</h2>
+    <div class="booster-item">
+      <button onclick="buyBooster('reduced_prices')">Reduced Prices (30 min) - $5,000</button>
+    </div>
+    <div class="booster-item">
+      <button onclick="buyBooster('double_cash')">2x More Cash (30 min) - $10,000</button>
+    </div>
+  </div>
+
+<script>
+const cryptos = [
+  { name: 'Bitcoin', symbol: 'BTC', price: 50000 },
+  { name: 'Ethereum', symbol: 'ETH', price: 3000 },
+  { name: 'Cardano', symbol: 'ADA', price: 2 },
+  { name: 'Dogecoin', symbol: 'DOGE', price: 0.5 }
+];
+
+const properties = [
+  { name: 'Cozy Apartment', type: 'apartment', price: 200000, rent: 1200 },
+  { name: 'Family House', type: 'house', price: 350000, rent: 2000 }
+];
+
+const stores = [
+  { 
+    name: 'Corner Store', 
+    price: 100000, 
+    income: 500,
+    upgrades: [
+      { name: 'Better Shelving', cost: 5000, incomeIncrease: 50 },
+      { name: 'New Cash Register', cost: 10000, incomeIncrease: 100 },
+      { name: 'Security System', cost: 15000, incomeIncrease: 150 }
+    ]
+  },
+  { 
+    name: 'Electronics Shop', 
+    price: 250000, 
+    income: 1200,
+    upgrades: [
+      { name: 'Product Display', cost: 20000, incomeIncrease: 200 },
+      { name: 'Repair Service', cost: 30000, incomeIncrease: 300 },
+      { name: 'Online Store', cost: 50000, incomeIncrease: 500 }
+    ]
+  }
+];
+
+let portfolio = {
+  crypto: {},
+  realEstate: [],
+  stores: []
+};
+
+let cash = 1000000; // Starting cash
+let activeBooster = null;
+let boosterEndTime = null;
+
+const boosterPrices = {
+  reduced_prices: 5000,
+  double_cash: 10000
+};
+
+function showSection(sectionName) {
+  const sections = document.querySelectorAll('.investment-section');
+  sections.forEach(section => section.classList.remove('active'));
+  document.getElementById(`${sectionName}-section`).classList.add('active');
+
+  const menuItems = document.querySelectorAll('.menu-item');
+  menuItems.forEach(item => item.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function updateCryptoCards() {
+  const container = document.getElementById('crypto-container');
+  container.innerHTML = '';
+
+  cryptos.forEach(crypto => {
+    const card = document.createElement('div');
+    card.className = 'crypto-card';
+    card.innerHTML = `
+      <div class="crypto-name">${crypto.name} (${crypto.symbol})</div>
+      <div class="crypto-price">Current Price: $${crypto.price.toFixed(2)}</div>
+      <div class="crypto-holdings">Holdings: ${portfolio.crypto[crypto.symbol] ? portfolio.crypto[crypto.symbol].amount : 0} ${crypto.symbol}</div>
+      <div class="button-group">
+        <button class="invest-btn" onclick="invest('${crypto.symbol}')">Invest</button>
+        <button class="sell-btn" onclick="sell('${crypto.symbol}')">Sell</button>
+        <button class="sell-all-btn" onclick="sellAll('${crypto.symbol}')">Sell All</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function updateRealEstateCards() {
+  const container = document.getElementById('real-estate-container');
+  container.innerHTML = '';
+
+  properties.forEach((property, index) => {
+    const card = document.createElement('div');
+    card.className = 'property-card';
+    const owned = portfolio.realEstate.find(p => p.name === property.name);
+    card.innerHTML = `
+      <div class="property-name">${property.name}</div>
+      <div class="property-price">Price: $${property.price.toFixed(2)}</div>
+      <div class="property-status">${owned ? 
+        `Status: ${owned.tenant ? 'Rented' : 'Vacant'}, Monthly Rent: $${property.rent}` : 
+        'Not Owned'}</div>
+      <div class="button-group">
+        ${owned ? `
+          <button class="sell-property-btn" onclick="sellProperty(${index})">Sell Property</button>
+          ${owned.tenant ? '' : `<button class="find-tenant-btn" onclick="findTenant(${index})">Find Tenant</button>`}
+          <button class="refresh-btn" onclick="refreshProperty(${index})">Refresh ($${Math.round(property.price * 0.05)})</button>
+        ` : `
+          <button class="buy-btn" onclick="buyProperty(${index})">Buy Property</button>
+        `}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function updateStoreCards() {
+  const container = document.getElementById('store-container');
+  container.innerHTML = '';
+
+  stores.forEach((store, index) => {
+    const card = document.createElement('div');
+    card.className = 'store-card';
+    const owned = portfolio.stores.find(s => s.name === store.name);
+    card.innerHTML = `
+      <div class="store-name">${store.name}</div>
+      <div class="store-price">Price: $${store.price.toFixed(2)}</div>
+      <div class="store-status">${owned ? 
+        `Owned, Hourly Income: $${owned.income.toFixed(2)}` : 
+        'Not Owned'}</div>
+      <div class="button-group">
+        ${owned ? `
+          <button class="sell-store-btn" onclick="sellStore(${index})">Sell Store</button>
+          <button class="upgrade-btn" onclick="showUpgrades(${index})">Upgrades</button>
+        ` : `
+          <button class="buy-btn" onclick="buyStore(${index})">Buy Store</button>
+        `}
+      </div>
+      ${owned ? `
+        <div class="upgrade-list" id="upgrade-list-${index}" style="display: none;">
+          ${store.upgrades.map((upgrade, upgradeIndex) => `
+            <div class="upgrade-item">
+              <span>${upgrade.name} - Cost: $${upgrade.cost}, Income Increase: $${upgrade.incomeIncrease}/hr</span>
+              <button class="upgrade-btn" onclick="upgradeStore(${index}, ${upgradeIndex})" 
+                      ${owned.upgrades.includes(upgradeIndex) ? 'disabled' : ''}>
+                ${owned.upgrades.includes(upgradeIndex) ? 'Purchased' : 'Buy'}
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function invest(symbol) {
+  const crypto = cryptos.find(c => c.symbol === symbol);
+  const amount = parseFloat(prompt(`How much ${symbol} do you want to buy?`));
+  
+  if (isNaN(amount) || amount <= 0) {
+    alert('Please enter a valid amount.');
+    return;
+  }
+
+  const cost = amount * crypto.price;
+  
+  if (cost > cash) {
+    alert('Not enough cash for this investment.');
+    return;
+  }
+
+  if (!portfolio.crypto[symbol]) {
+    portfolio.crypto[symbol] = { amount: 0, totalCost: 0 };
+  }
+  
+  portfolio.crypto[symbol].amount += amount;
+  portfolio.crypto[symbol].totalCost += cost;
+  cash -= cost;
+
+  alert(`You bought ${amount} ${symbol} for $${cost.toFixed(2)}`);
+  updateDisplay();
+  saveGame();
+}
+
+function sell(symbol) {
+  if (!portfolio.crypto[symbol] || portfolio.crypto[symbol].amount === 0) {
+    alert(`You don't have any ${symbol} to sell.`);
+    return;
+  }
+
+  const crypto = cryptos.find(c => c.symbol === symbol);
+  const maxAmount = portfolio.crypto[symbol].amount;
+  const amount = parseFloat(prompt(`How much ${symbol} do you want to sell? (Max: ${maxAmount})`));
+
+  if (isNaN(amount) || amount <= 0 || amount > maxAmount) {
+    alert('Please enter a valid amount.');
+    return;
+  }
+
+  const revenue = amount * crypto.price;
+  const profit = revenue - (portfolio.crypto[symbol].totalCost * (amount / portfolio.crypto[symbol].amount));
+
+  portfolio.crypto[symbol].amount -= amount;
+  portfolio.crypto[symbol].totalCost -= (portfolio.crypto[symbol].totalCost * (amount / (portfolio.crypto[symbol].amount + amount)));
+  cash += revenue;
+
+  alert(`You sold ${amount} ${symbol} for $${revenue.toFixed(2)}. Profit: $${profit.toFixed(2)}`);
+  updateDisplay();
+  saveGame();
+}
+
+function sellAll(symbol) {
+  if (!portfolio.crypto[symbol] || portfolio.crypto[symbol].amount === 0) {
+    alert(`You don't have any ${symbol} to sell.`);
+    return;
+  }
+
+  const crypto = cryptos.find(c => c.symbol === symbol);
+  const amount = portfolio.crypto[symbol].amount;
+  const revenue = amount * crypto.price;
+  const profit = revenue - portfolio.crypto[symbol].totalCost;
+
+  cash += revenue;
+
+  alert(`You sold all your ${symbol} (${amount}) for $${revenue.toFixed(2)}. Profit: $${profit.toFixed(2)}`);
+
+  delete portfolio.crypto[symbol];
+  updateDisplay();
+  saveGame();
+}
+
+function buyProperty(index) {
+  const property = properties[index];
+  const price = activeBooster === 'reduced_prices' ? property.price * 0.9 : property.price;
+  
+  if (cash < price) {
+    alert('Not enough cash to buy this property.');
+    return;
+  }
+
+  cash -= price;
+  portfolio.realEstate.push({
+    name: property.name,
+    purchasePrice: price,
+    tenant: null,
+    lastRefresh: Date.now()
+  });
+
+  alert(`You bought ${property.name} for $${price.toFixed(2)}`);
+  updateDisplay();
+  saveGame();
+}
+
+function sellProperty(index) {
+  const property = properties[index];
+  const ownedIndex = portfolio.realEstate.findIndex(p => p.name === property.name);
+  
+  if (ownedIndex === -1) {
+    alert('You do not own this property.');
+    return;
+  }
+
+  const owned = portfolio.realEstate[ownedIndex];
+  const salePrice = property.price;
+  cash += salePrice;
+
+  const profit = salePrice - owned.purchasePrice;
+  alert(`You sold ${property.name} for $${salePrice.toFixed(2)}. Profit: $${profit.toFixed(2)}`);
+
+  portfolio.realEstate.splice(ownedIndex, 1);
+  updateDisplay();
+  saveGame();
+}
+
+function findTenant(index) {
+  const property = portfolio.realEstate.find(p => p.name === properties[index].name);
+  if (!property) {
+    alert('You do not own this property.');
+    return;
+  }
+
+  if (property.tenant) {
+    alert('This property already has a tenant.');
+    return;
+  }
+
+  property.tenant = { moveinDate: Date.now() };
+  alert(`You found a tenant for ${property.name}!`);
+  updateDisplay();
+  saveGame();
+}
+
+function refreshProperty(index) {
+  const property = portfolio.realEstate.find(p => p.name === properties[index].name);
+  if (!property) {
+    alert('You do not own this property.');
+    return;
+  }
+
+  const refreshCost = Math.round(properties[index].price * 0.05);
+  if (cash < refreshCost) {
+    alert('Not enough cash to refresh this property.');
+    return;
+  }
+
+  cash -= refreshCost;
+  property.lastRefresh = Date.now();
+  alert(`You refreshed ${property.name} for $${refreshCost.toFixed(2)}`);
+  updateDisplay();
+  saveGame();
+}
+
+function buyStore(index) {
+  const store = stores[index];
+  const price = activeBooster === 'reduced_prices' ? store.price * 0.9 : store.price;
+  
+  if (cash < price) {
+    alert('Not enough cash to buy this store.');
+    return;
+  }
+
+  cash -= price;
+  portfolio.stores.push({
+    name: store.name,
+    purchasePrice: price,
+    income: store.income,
+    upgrades: []
+  });
+
+  alert(`You bought ${store.name} for $${price.toFixed(2)}`);
+  updateDisplay();
+  saveGame();
+}
+
+function sellStore(index) {
+  const store = stores[index];
+  const ownedIndex = portfolio.stores.findIndex(s => s.name === store.name);
+  
+  if (ownedIndex === -1) {
+    alert('You do not own this store.');
+    return;
+  }
+
+  const owned = portfolio.stores[ownedIndex];
+  const salePrice = store.price;
+  cash += salePrice;
+
+  const profit = salePrice - owned.purchasePrice;
+  alert(`You sold ${store.name} for $${salePrice.toFixed(2)}. Profit: $${profit.toFixed(2)}`);
+
+  portfolio.stores.splice(ownedIndex, 1);
+  updateDisplay();
+  saveGame();
+}
+
+function showUpgrades(index) {
+  const upgradeList = document.getElementById(`upgrade-list-${index}`);
+  upgradeList.style.display = upgradeList.style.display === 'none' ? 'block' : 'none';
+}
+
+function upgradeStore(storeIndex, upgradeIndex) {
+  const store = stores[storeIndex];
+  const upgrade = store.upgrades[upgradeIndex];
+  const ownedStore = portfolio.stores.find(s => s.name === store.name);
+
+  if (!ownedStore) {
+    alert('You do not own this store.');
+    return;
+  }
+
+  if (ownedStore.upgrades.includes(upgradeIndex)) {
+    alert('You have already purchased this upgrade.');
+    return;
+  }
+
+  const cost = activeBooster === 'reduced_prices' ? upgrade.cost * 0.9 : upgrade.cost;
+  if (cash < cost) {
+    alert('Not enough cash to purchase this upgrade.');
+    return;
+  }
+
+  cash -= cost;
+  ownedStore.income += upgrade.incomeIncrease;
+  ownedStore.upgrades.push(upgradeIndex);
+
+  alert(`You purchased the "${upgrade.name}" upgrade for ${store.name}. New hourly income: $${ownedStore.income.toFixed(2)}`);
+  updateDisplay();
+  saveGame();
+}
+
+function updatePortfolioValue() {
+  let totalValue = cash;
+
+  // Add crypto value
+  for (const symbol in portfolio.crypto) {
+    const crypto = cryptos.find(c => c.symbol === symbol);
+    totalValue += portfolio.crypto[symbol].amount * crypto.price;
+  }
+
+  // Add real estate value
+  portfolio.realEstate.forEach(property => {
+    const propertyData = properties.find(p => p.name === property.name);
+    totalValue += propertyData.price;
+  });
+
+  // Add store value
+  portfolio.stores.forEach(store => {
+    const storeData = stores.find(s => s.name === store.name);
+    totalValue += storeData.price;
+  });
+
+  document.getElementById('portfolio-value').textContent = `Total Portfolio Value: $${totalValue.toFixed(2)} (Cash: $${cash.toFixed(2)})`;
+}
+
+function updateDisplay() {
+  updateCryptoCards();
+  updateRealEstateCards();
+  updateStoreCards();
+  updatePortfolioValue();
+}
+
+function getCash() {
+  const amount = activeBooster === 'double_cash' ? 20000 : 10000;
+  cash += amount;
+  alert(`You received $${amount.toFixed(2)} in cash!`);
+  updateDisplay();
+  saveGame();
+}
+
+function toggleBoosterMenu() {
+  const menu = document.getElementById('booster-menu');
+  menu.classList.toggle('active');
+}
+
+function buyBooster(boosterType) {
+  if (activeBooster) {
+    alert('A booster is already active. Please wait for it to expire.');
+    return;
+  }
+
+  const price = boosterPrices[boosterType];
+  if (cash < price) {
+    alert(`Not enough cash to buy this booster. You need $${price}.`);
+    return;
+  }
+
+  cash -= price;
+  activeBooster = boosterType;
+  boosterEndTime = Date.now() + 30 * 60 * 1000; // 30 minutes
+
+  alert(`${boosterType === 'reduced_prices' ? 'Reduced Prices' : '2x More Cash'} booster activated for 30 minutes!`);
+  toggleBoosterMenu();
+
+  // Set a timeout to deactivate the booster
+  setTimeout(() => {
+    activeBooster = null;
+    boosterEndTime = null;
+    alert('Booster has expired.');
+    updateDisplay();
+    saveGame();
+  }, 30 * 60 * 1000);
+
+  updateDisplay();
+  saveGame();
+}
+
+// New functions for auto-save feature
+function saveGame() {
+  const gameState = {
+    cash,
+    portfolio,
+    activeBooster,
+    boosterEndTime
+  };
+  localStorage.setItem('investmentSimulatorSave', JSON.stringify(gameState));
+  updateSaveStatus('Game auto-saved');
+}
+
+function loadGame() {
+  const savedState = localStorage.getItem('investmentSimulatorSave');
+  if (savedState) {
+    const gameState = JSON.parse(savedState);
+    cash = gameState.cash;
+    portfolio = gameState.portfolio;
+    activeBooster = gameState.activeBooster;
+    boosterEndTime = gameState.boosterEndTime;
+
+    // Reactivate booster if it's still valid
+    if (activeBooster && boosterEndTime) {
+      const remainingTime = boosterEndTime - Date.now();
+      if (remainingTime > 0) {
+        setTimeout(() => {
+          activeBooster = null;
+          boosterEndTime = null;
+          alert('Booster has expired.');
+          updateDisplay();
+          saveGame();
+        }, remainingTime);
+      } else {
+        activeBooster = null;
+        boosterEndTime = null;
+      }
+    }
+
+    updateDisplay();
+    updateSaveStatus('Game loaded');
+  }
+}
+
+function updateSaveStatus(message) {
+  const saveStatus = document.getElementById('save-status');
+  saveStatus.textContent = message;
+  setTimeout(() => {
+    saveStatus.textContent = '';
+  }, 3000);
+}
+
+// Initialize the game
+loadGame();
+updateDisplay();
+
+// Auto-save every minute
+setInterval(saveGame, 60000);
+
+// Simulate price changes and collect income every 5 seconds (for demonstration)
+setInterval(() => {
+  // Update crypto prices
+  cryptos.forEach(crypto => {
+    const change = (Math.random() - 0.5) * 0.02; // -1% to +1% change
+    crypto.price *= (1 + change);
+  });
+
+  // Collect rent and handle tenant departures
+  portfolio.realEstate.forEach(property => {
+    const propertyData = properties.find(p => p.name === property.name);
+    if (property.tenant) {
+      const rentAmount = propertyData.rent / (24 * 720); // 5 seconds rent
+      cash += activeBooster === 'double_cash' ? rentAmount * 2 : rentAmount;
+      
+      // 0.007% chance of tenant leaving each 5 seconds (equivalent to 5% per hour)
+      if (Math.random() < 0.00007) {
+        property.tenant = null;
+        alert(`The tenant of ${property.name} has left. You need to find a new tenant!`);
+      }
+    }
+    
+    // Check if property needs refreshing (every 5 minutes in this demo)
+    const fiveMinutes = 300000; // 5 minutes in milliseconds
+    if (Date.now() - property.lastRefresh > fiveMinutes) {
+      alert(`${property.name} needs refreshing! Tenant will leave soon if not refreshed.`);
+      // If not refreshed within 30 seconds, tenant leaves
+      setTimeout(() => {
+        if (Date.now() - property.lastRefresh > fiveMinutes + 30000) { // +30 seconds
+          property.tenant = null;
+          alert(`The tenant of ${property.name} has left due to lack of maintenance.`);
+          updateDisplay();
+          saveGame();
+        }
+      }, 30000); // Check again after 30 seconds
+    }
+  });
+
+  // Collect store income
+  portfolio.stores.forEach(store => {
+    const incomeAmount = store.income / 720; // 5 seconds income
+    cash += activeBooster === 'double_cash' ? incomeAmount * 2 : incomeAmount;
+  });
+
+  updateDisplay();
+  saveGame();
+}, 5000); // Run every 5 seconds for demonstration
+</script>
+</body></html>
